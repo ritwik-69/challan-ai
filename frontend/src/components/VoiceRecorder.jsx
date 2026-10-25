@@ -194,34 +194,61 @@ export default function VoiceRecorder({
     else startRecording();
   };
 
-  // ─── Play Advisory via Sarvam Bulbul v3 TTS ──────────────────────────────
+  // ─── Play Statement via Sarvam Bulbul v3 TTS ────────────────────────────
   const handlePlayVoice = async () => {
     if (isPlayingAudio) {
       audioElemRef.current?.pause();
       setIsPlayingAudio(false);
       return;
     }
+
+    const cleanStatement = (driverStatement || '').trim();
+    if (!cleanStatement) {
+      setErrorMsg('No statement to play. Speak using the mic or select a demo preset.');
+      return;
+    }
+
     setIsPlayingAudio(true);
+    setErrorMsg('');
     try {
+      const langCode = (driverLang || '').toLowerCase().includes('marathi') ? 'mr-IN'
+        : (driverLang || '').toLowerCase().includes('kannada') ? 'kn-IN'
+        : 'hi-IN';
+
       const res = await fetch(`${BACKEND_URL}/api/v1/sarvam/tts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: driverStatement, target_language_code: 'hi-IN', speaker: 'aditya' })
+        body: JSON.stringify({
+          text: cleanStatement,
+          target_language_code: langCode,
+          speaker: 'aditya'
+        })
       });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.audios?.length > 0) {
-          const audio = new Audio(`data:audio/wav;base64,${data.audios[0]}`);
-          audioElemRef.current = audio;
-          audio.onended = () => setIsPlayingAudio(false);
-          await audio.play();
-          return;
-        }
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.detail || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data.audios?.length > 0) {
+        const audio = new Audio(`data:audio/wav;base64,${data.audios[0]}`);
+        audioElemRef.current = audio;
+        audio.onended = () => setIsPlayingAudio(false);
+        audio.onerror = () => {
+          setIsPlayingAudio(false);
+          setErrorMsg('Failed to play synthesized audio.');
+        };
+        await audio.play();
+        return;
+      } else {
+        throw new Error('No audio returned by Bulbul v3');
       }
     } catch (err) {
       console.warn('[VoiceRecorder] TTS error:', err);
+      setErrorMsg(`TTS playback failed: ${err.message}`);
+      setIsPlayingAudio(false);
     }
-    setTimeout(() => setIsPlayingAudio(false), 4000);
   };
 
   // ─── Render ───────────────────────────────────────────────────────────────

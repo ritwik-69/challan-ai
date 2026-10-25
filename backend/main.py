@@ -85,8 +85,13 @@ def generate_speech(req: TTSRequest):
     Generate live spoken audio using Sarvam Bulbul v3.
     """
     try:
+        text = (req.text or "").strip()
+        if not text:
+            raise HTTPException(status_code=400, detail="Text parameter cannot be empty.")
+
+        logger.info(f"TTS request: lang={req.target_language_code}, speaker={req.speaker}, text_len={len(text)}")
         data = sarvam_service.text_to_speech(
-            text=req.text,
+            text=text,
             target_language_code=req.target_language_code,
             speaker=req.speaker
         )
@@ -94,7 +99,14 @@ def generate_speech(req: TTSRequest):
             "status": "success",
             "audios": data.get("audios", [])
         }
+    except HTTPException:
+        raise
+    except requests.HTTPError as e:
+        body = e.response.text if e.response is not None else str(e)
+        logger.error(f"Sarvam TTS API error: {body}")
+        raise HTTPException(status_code=502, detail=f"Sarvam TTS Error: {body}")
     except Exception as e:
+        logger.error(f"TTS unexpected error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/v1/sarvam/stt")
@@ -139,6 +151,7 @@ def translate_text(req: TranslateRequest):
     Translate text using Sarvam Translate API.
     """
     try:
+        logger.info(f"Translate request: {req.source_language_code} -> {req.target_language_code}, text_len={len(req.text)}")
         data = sarvam_service.translate(
             input_text=req.text,
             source_lang=req.source_language_code,
@@ -148,7 +161,12 @@ def translate_text(req: TranslateRequest):
             "status": "success",
             "translated_text": data.get("translated_text", "")
         }
+    except requests.HTTPError as e:
+        body = e.response.text if e.response is not None else str(e)
+        logger.error(f"Sarvam Translate API error: {body}")
+        raise HTTPException(status_code=502, detail=f"Sarvam Translate Error: {body}")
     except Exception as e:
+        logger.error(f"Translate unexpected error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":

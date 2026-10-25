@@ -24,28 +24,33 @@ class SarvamService:
         text: str,
         target_language_code: str = "hi-IN",
         speaker: str = "aditya",
-        model: str = "bulbul:v3"
+        model: str = "bulbul:v3",
+        speech_sample_rate: int = 22050
     ) -> Dict[str, Any]:
         """
         Synthesize text into natural-sounding Indic audio using Sarvam Bulbul v3.
         """
+        clean_text = (text or "").strip()
+        if not clean_text:
+            raise ValueError("Text to synthesize cannot be empty.")
+
         url = f"{BASE_URL}/text-to-speech"
         headers = {
             **self.headers,
             "Content-Type": "application/json"
         }
         payload = {
-            "inputs": [text],
+            "text": clean_text,
             "target_language_code": target_language_code,
             "speaker": speaker,
             "pitch": 0,
             "pace": 1.0,
             "loudness": 1.0,
-            "speech_sample_rate": 8000,
+            "speech_sample_rate": speech_sample_rate,
             "enable_preprocessing": True,
             "model": model
         }
-        res = requests.post(url, headers=headers, json=payload, timeout=20)
+        res = requests.post(url, headers=headers, json=payload, timeout=25)
         res.raise_for_status()
         return res.json()
 
