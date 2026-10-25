@@ -1,56 +1,54 @@
 import React from 'react';
-import { Gavel, ShieldCheck, AlertOctagon, CheckCircle2, ChevronRight, FileCheck2 } from 'lucide-react';
+import { Gavel, ShieldCheck, AlertCircle, CheckCircle2, FileCheck2, ArrowUpRight, Scale } from 'lucide-react';
 
 export default function LegalAuditCard({ challan, onViewPetition }) {
-  // SVG circular gauge math
-  const radius = 52;
+  const radius = 38;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (challan.winProbability / 100) * circumference;
 
   return (
-    <div className="glass-panel" style={{ padding: '24px' }}>
+    <div className="legal-card" style={{ padding: '24px' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '10px',
-            background: 'rgba(16, 185, 129, 0.15)',
+            width: '32px',
+            height: '32px',
+            borderRadius: '6px',
+            background: 'var(--color-emerald-bg)',
+            color: '#10b981',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            color: '#10b981'
+            justifyContent: 'center'
           }}>
-            <Gavel size={20} />
+            <Gavel size={18} />
           </div>
           <div>
-            <h3 style={{ fontSize: '1.15rem', margin: 0, fontWeight: 700 }}>
-              AI Legal Defense Audit
+            <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0 }}>
+              AI Statutory Defense Audit & Scorecard
             </h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Powered by Sarvam-105B (Indian Statutory & Case-Law Reasoning Engine)
+            <span style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>
+              Deterministic Motor Vehicles Act 1988/2019 & Central Motor Vehicles Rules Evaluation
             </span>
           </div>
         </div>
 
         <button
-          id="btn-open-petition"
           onClick={onViewPetition}
-          className="btn-primary"
-          style={{ fontSize: '0.85rem', padding: '8px 16px' }}
+          className="btn-primary-action"
+          style={{ fontSize: '12px', padding: '7px 14px' }}
         >
-          <FileCheck2 size={16} />
-          <span>View Formal Court Petition</span>
+          <FileCheck2 size={14} />
+          <span>Draft Magistrate Petition</span>
         </button>
       </div>
 
-      {/* Top Banner: Win Probability Gauge & Primary Ground */}
+      {/* Executive Scorecard Strip */}
       <div style={{
-        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.06) 100%)',
-        border: '1px solid rgba(16, 185, 129, 0.25)',
+        background: 'var(--bg-panel)',
+        border: '1px solid var(--border-subtle)',
         borderRadius: 'var(--radius-md)',
-        padding: '20px',
+        padding: '18px 20px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -58,116 +56,112 @@ export default function LegalAuditCard({ challan, onViewPetition }) {
         gap: '20px',
         marginBottom: '20px'
       }}>
-        {/* Probability Gauge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
-          <div style={{ position: 'relative', width: '120px', height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="120" height="120" style={{ transform: 'rotate(-90deg)' }}>
+        {/* Win Rate Meter */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ position: 'relative', width: '90px', height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="90" height="90" style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx="45" cy="45" r={radius} stroke="var(--border-subtle)" strokeWidth="7" fill="transparent" />
               <circle
-                cx="60"
-                cy="60"
-                r={radius}
-                stroke="rgba(255, 255, 255, 0.08)"
-                strokeWidth="10"
-                fill="transparent"
-              />
-              <circle
-                cx="60"
-                cy="60"
-                r={radius}
-                stroke="#10b981"
-                strokeWidth="10"
-                fill="transparent"
+                cx="45" cy="45" r={radius}
+                stroke="#10b981" strokeWidth="7" fill="transparent"
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
                 strokeLinecap="round"
-                style={{ transition: 'stroke-dashoffset 1s ease-in-out' }}
+                style={{ transition: 'stroke-dashoffset 0.8s ease' }}
               />
             </svg>
             <div style={{ position: 'absolute', textAlign: 'center' }}>
-              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#34d399', lineHeight: 1 }}>
+              <div style={{ fontSize: '20px', fontWeight: 800, color: '#34d399', lineHeight: 1 }}>
                 {challan.winProbability}%
               </div>
-              <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
-                Win Rate
+              <div style={{ fontSize: '9px', color: 'var(--text-tertiary)', fontWeight: 600, textTransform: 'uppercase' }}>
+                Dismissal
               </div>
             </div>
           </div>
 
           <div>
-            <div className="badge badge-success" style={{ marginBottom: '6px' }}>
-              <ShieldCheck size={12} /> High Dismissal Viability
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <span className="status-chip chip-emerald" style={{ fontSize: '11px' }}>
+                <ShieldCheck size={12} /> High Viability Defense
+              </span>
+              <span style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>
+                Case Merit: Exoneration Likely
+              </span>
             </div>
-            <h4 style={{ fontSize: '1.1rem', margin: '0 0 4px', fontWeight: 700, color: '#fff' }}>
-              Recommendation: Contest in Virtual Court
-            </h4>
-            <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-muted)', maxWidth: '420px' }}>
+            <h4 style={{ fontSize: '14px', fontWeight: 700, margin: '0 0 2px', color: '#fff' }}>
               {challan.primaryGround}
+            </h4>
+            <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)' }}>
+              Notice procedurally time-barred as upheld by Delhi High Court & Apex Statutory Guidelines.
             </p>
           </div>
         </div>
 
-        {/* Action Callout */}
+        {/* Financial Relief Box */}
         <div style={{
-          background: 'rgba(0,0,0,0.4)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '12px 16px',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: '6px',
+          padding: '10px 16px',
           textAlign: 'right'
         }}>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Estimated Potential Saving</div>
-          <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f59e0b' }}>
-            ₹{challan.fineAmount} + 0 Demerit Points
+          <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>
+            Direct Fine Revocation
           </div>
-          <div style={{ fontSize: '0.68rem', color: '#34d399', fontWeight: 600 }}>
-            Zero Legal Fee (Self-Represented Filing)
+          <div style={{ fontSize: '20px', fontWeight: 800, color: '#f59e0b' }}>
+            ₹{challan.fineAmount}
+          </div>
+          <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 600 }}>
+            ₹0 Legal Fee • Free Self-Filing
           </div>
         </div>
       </div>
 
-      {/* Statutory Violations & Legal Loopholes List */}
+      {/* Statutory Violations Table */}
       <div style={{ marginBottom: '20px' }}>
-        <h4 style={{ fontSize: '0.92rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '10px' }}>
-          Statutory Grounds & Procedural Defects Identified:
-        </h4>
+        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px' }}>
+          Identified Statutory Non-Compliances & Procedural Defects:
+        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {challan.statutoryViolations.map((v, i) => (
             <div key={i} style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: 'var(--radius-sm)',
-              padding: '14px 16px',
+              background: 'var(--bg-panel)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '6px',
+              padding: '12px 14px',
               display: 'flex',
               alignItems: 'flex-start',
               gap: '12px'
             }}>
               <div style={{
                 marginTop: '2px',
-                width: '26px',
-                height: '26px',
-                borderRadius: '6px',
-                background: 'rgba(239, 68, 68, 0.15)',
-                color: '#ef4444',
+                width: '20px',
+                height: '20px',
+                borderRadius: '4px',
+                background: 'var(--color-rose-bg)',
+                color: '#f43f5e',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0
               }}>
-                <AlertOctagon size={16} />
+                <AlertCircle size={14} />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', flexWrap: 'wrap', gap: '6px' }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#fff' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                  <span style={{ fontWeight: 700, fontSize: '13px', color: '#fff' }}>
                     {v.summary}
-                  </div>
-                  <span className="badge badge-danger" style={{ fontSize: '0.65rem' }}>
+                  </span>
+                  <span className="status-chip chip-rose" style={{ fontSize: '10px' }}>
                     {v.status}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.74rem', color: 'var(--color-primary)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+                <div style={{ fontSize: '11px', color: '#f59e0b', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
                   Statute: {v.rule}
                 </div>
-                <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                   {v.details}
                 </p>
               </div>
@@ -176,45 +170,30 @@ export default function LegalAuditCard({ challan, onViewPetition }) {
         </div>
       </div>
 
-      {/* Discrepancy Comparison Table */}
+      {/* Discrepancy Matrix */}
       <div>
-        <h4 style={{ fontSize: '0.92rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '10px' }}>
-          Evidence & Compliance Matrix:
-        </h4>
+        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px' }}>
+          Evidentiary Audit & Compliance Matrix:
+        </div>
 
-        <div style={{
-          overflowX: 'auto',
-          borderRadius: 'var(--radius-sm)',
-          border: '1px solid var(--border-subtle)'
-        }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem', textAlign: 'left' }}>
+        <div style={{ border: '1px solid var(--border-subtle)', borderRadius: '6px', overflow: 'hidden' }}>
+          <table className="legal-table">
             <thead>
-              <tr style={{ background: 'rgba(255,255,255,0.05)', borderBottom: '1px solid var(--border-subtle)' }}>
-                <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 600 }}>Inspection Parameter</th>
-                <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 600 }}>Challan / Police Claim</th>
-                <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 600 }}>Legal / Ground Reality</th>
-                <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 600 }}>Legal Verdict</th>
+              <tr>
+                <th>Inspection Ground</th>
+                <th>Authority Record</th>
+                <th>Statutory Requirement</th>
+                <th>Defect Finding</th>
               </tr>
             </thead>
             <tbody>
               {challan.discrepancyMatrix.map((row, idx) => (
-                <tr key={idx} style={{
-                  borderBottom: '1px solid rgba(255,255,255,0.04)',
-                  background: idx % 2 === 0 ? 'rgba(0,0,0,0.1)' : 'transparent'
-                }}>
-                  <td style={{ padding: '10px 14px', fontWeight: 600, color: '#f1f5f9' }}>{row.field}</td>
-                  <td style={{ padding: '10px 14px', color: '#f87171' }}>{row.challanRecord}</td>
-                  <td style={{ padding: '10px 14px', color: '#34d399' }}>{row.legalRequirement}</td>
-                  <td style={{ padding: '10px 14px' }}>
-                    <span style={{
-                      display: 'inline-block',
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      fontSize: '0.7rem',
-                      fontWeight: 700,
-                      background: 'rgba(245, 158, 11, 0.15)',
-                      color: '#fbbf24'
-                    }}>
+                <tr key={idx}>
+                  <td style={{ fontWeight: 600, color: '#f1f5f9' }}>{row.field}</td>
+                  <td style={{ color: '#fb7185' }}>{row.challanRecord}</td>
+                  <td style={{ color: '#34d399' }}>{row.legalRequirement}</td>
+                  <td>
+                    <span className="status-chip chip-amber" style={{ fontSize: '10px' }}>
                       {row.status}
                     </span>
                   </td>

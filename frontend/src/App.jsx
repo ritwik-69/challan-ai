@@ -7,7 +7,7 @@ import AudioAdvisory from './components/AudioAdvisory';
 import PetitionModal from './components/PetitionModal';
 import DiagnosticsModal from './components/DiagnosticsModal';
 import { DEMO_CHALLANS } from './data/demoData';
-import { Shield, Sparkles, Scale, AlertCircle, FileText, CheckCircle2, ChevronRight, Zap } from 'lucide-react';
+import { ShieldCheck, AlertCircle, Scale, FileText, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [activeDemoId, setActiveDemoId] = useState(DEMO_CHALLANS[0].id);
@@ -26,12 +26,12 @@ export default function App() {
   const handleSelectDemo = (id) => {
     setActiveDemoId(id);
     setIsScanning(true);
-    setTimeout(() => setIsScanning(false), 1200);
+    setTimeout(() => setIsScanning(false), 800);
   };
 
   const handleTriggerScan = () => {
     setIsScanning(true);
-    setTimeout(() => setIsScanning(false), 1600);
+    setTimeout(() => setIsScanning(false), 1200);
   };
 
   const handleToggleRecord = (recordingState) => {
@@ -46,128 +46,56 @@ export default function App() {
   };
 
   return (
-    <div className="app-container">
-      {/* Navbar with 1-Click Demo Presets & Pipeline Tracker */}
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Executive Top Navigation */}
       <Navbar
         activeDemoId={activeDemoId}
         onSelectDemo={handleSelectDemo}
         challanList={DEMO_CHALLANS}
         onOpenDiagnostics={() => setIsDiagnosticsOpen(true)}
+        onOpenPetition={() => setIsPetitionOpen(true)}
       />
 
-      {/* Hero Impact Stats Ticker */}
+      {/* Metric Strip */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-        gap: '16px',
-        marginBottom: '32px'
+        background: 'var(--bg-panel)',
+        borderBottom: '1px solid var(--border-subtle)',
+        padding: '10px 24px'
       }}>
-        <div className="glass-panel" style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: '14px',
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#ef4444'
-          }}>
-            <AlertCircle size={24} />
+        <div style={{
+          maxWidth: '1440px',
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: '16px',
+          fontSize: '12px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="status-chip chip-rose">32.4% Fatal Error Rate</span>
+            <span style={{ color: 'var(--text-tertiary)' }}>Camera Notices Defective in Indian Metros</span>
           </div>
-          <div>
-            <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
-              32.4%
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Camera Challans Flawed / Delayed
-            </div>
-          </div>
-        </div>
 
-        <div className="glass-panel" style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: '14px',
-            background: 'rgba(245, 158, 11, 0.15)',
-            border: '1px solid rgba(245, 158, 11, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#f59e0b'
-          }}>
-            <Scale size={24} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="status-chip chip-amber">CMVR Rule 167A</span>
+            <span style={{ color: 'var(--text-tertiary)' }}>Strict 15-Day Service Statutory Limitation</span>
           </div>
-          <div>
-            <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
-              CMVR 167A
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Mandatory 15-Day Service Rule
-            </div>
-          </div>
-        </div>
 
-        <div className="glass-panel" style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: '14px',
-            background: 'rgba(16, 185, 129, 0.15)',
-            border: '1px solid rgba(16, 185, 129, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#10b981'
-          }}>
-            <CheckCircle2 size={24} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="status-chip chip-emerald">₹0 Filing Fee</span>
+            <span style={{ color: 'var(--text-tertiary)' }}>Direct Virtual Court Self-Filing (vcourts.gov.in)</span>
           </div>
-          <div>
-            <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
-              ₹0 Legal Fee
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Direct Virtual Court Self-Filing
-            </div>
-          </div>
-        </div>
 
-        <div className="glass-panel" style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: '14px',
-            background: 'rgba(139, 92, 246, 0.15)',
-            border: '1px solid rgba(139, 92, 246, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#8b5cf6'
-          }}>
-            <Sparkles size={24} />
-          </div>
-          <div>
-            <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
-              Multimodal
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Vision + Voice + Translation
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="status-chip chip-indigo">Sarvam Multimodal</span>
+            <span style={{ color: 'var(--text-tertiary)' }}>Vision + Saaras + Bulbul + Translate</span>
           </div>
         </div>
       </div>
 
-      {/* Main 2-Column Responsive Workspace */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))',
-        gap: '28px',
-        alignItems: 'start'
-      }}>
-        {/* Left Column: Multimodal Ingestion (Scanner & Voice) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+      {/* Main 2-Column Professional Console */}
+      <main className="ops-grid" style={{ flex: 1 }}>
+        {/* Left Column: Evidence & Driver Statement */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <ChallanScanner
             challan={activeChallan}
             isScanning={isScanning}
@@ -183,8 +111,8 @@ export default function App() {
           />
         </div>
 
-        {/* Right Column: AI Legal Audit & Spoken Advisory */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+        {/* Right Column: Statutory Audit & Spoken Advisory */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <LegalAuditCard
             challan={activeChallan}
             onViewPetition={() => setIsPetitionOpen(true)}
@@ -194,7 +122,7 @@ export default function App() {
             challan={activeChallan}
           />
         </div>
-      </div>
+      </main>
 
       {/* Formal Virtual Court Petition Modal */}
       <PetitionModal
@@ -209,26 +137,31 @@ export default function App() {
         onClose={() => setIsDiagnosticsOpen(false)}
       />
 
-      {/* Footer */}
+      {/* Clean Corporate Legal-Tech Footer */}
       <footer style={{
-        marginTop: '70px',
-        paddingTop: '28px',
         borderTop: '1px solid var(--border-subtle)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '18px',
-        color: 'var(--text-subtle)',
-        fontSize: '0.82rem'
+        background: 'var(--bg-sidebar)',
+        padding: '14px 24px',
+        fontSize: '12px',
+        color: 'var(--text-tertiary)'
       }}>
-        <div>
-          <strong style={{ color: 'var(--text-muted)' }}>ChallanAI (चालान-न्याय)</strong> • Built for the Sarvam AI Hackathon
-        </div>
-        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-          <span>Sarvam Vision • Saaras v4 • Bulbul v3 • Translate</span>
-          <span>Indian Motor Vehicles Act 1988/2019</span>
-          <span>Central Motor Vehicles Rules (CMVR 167A)</span>
+        <div style={{
+          maxWidth: '1440px',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div>
+            <strong style={{ color: '#fff' }}>ChallanAI</strong> — Enterprise Legal Defense Console for Indian Traffic E-Challans
+          </div>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <span>Powered by Sarvam AI Multimodal Stack</span>
+            <span>Indian Motor Vehicles Act, 1988/2019</span>
+            <span>CMVR Rule 167A</span>
+          </div>
         </div>
       </footer>
     </div>

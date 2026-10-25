@@ -1,292 +1,242 @@
 import React, { useState } from 'react';
-import { Scan, Eye, AlertTriangle, CheckCircle, FileText, Camera, UploadCloud } from 'lucide-react';
+import { FileText, Camera, AlertTriangle, CheckCircle, Scan, ShieldCheck, Eye, Layers } from 'lucide-react';
 
 export default function ChallanScanner({ challan, isScanning, onTriggerScan }) {
-  const [activeHighlight, setActiveHighlight] = useState('all');
+  const [activeTab, setActiveTab] = useState('notice'); // 'notice' | 'camera'
 
   return (
-    <div className="glass-panel" style={{ padding: '24px', position: 'relative', overflow: 'hidden' }}>
-      {/* Laser scan effect when scanning */}
-      {isScanning && <div className="scan-laser" />}
-
+    <div className="legal-card" style={{ padding: '20px' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '10px',
-            background: 'rgba(6, 182, 212, 0.15)',
+            width: '28px',
+            height: '28px',
+            borderRadius: '6px',
+            background: 'var(--color-sky-bg)',
+            color: '#38bdf8',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            color: '#06b6d4'
+            justifyContent: 'center'
           }}>
-            <Scan size={20} />
+            <Scan size={16} />
           </div>
           <div>
-            <h3 style={{ fontSize: '1.15rem', margin: 0, fontWeight: 700 }}>
-              Evidence & Challan Scanner
+            <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0 }}>
+              Evidence & Intake Dossier
             </h3>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Powered by Sarvam Vision (Multilingual Document & Crop OCR)
+            <span style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>
+              Sarvam Vision OCR • Document & Photographic Analysis
             </span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Segmented View Switcher */}
+          <div className="segmented-control">
+            <button
+              onClick={() => setActiveTab('notice')}
+              className={`segmented-btn ${activeTab === 'notice' ? 'active' : ''}`}
+              style={{ fontSize: '11px', padding: '4px 10px' }}
+            >
+              <FileText size={12} />
+              <span>Notice Slip</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('camera')}
+              className={`segmented-btn ${activeTab === 'camera' ? 'active' : ''}`}
+              style={{ fontSize: '11px', padding: '4px 10px' }}
+            >
+              <Camera size={12} />
+              <span>Camera Feed</span>
+            </button>
+          </div>
+
           <button
-            id="btn-trigger-scan"
             onClick={onTriggerScan}
-            className="btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+            className="btn-outline-action"
+            style={{ fontSize: '11px', padding: '5px 10px' }}
+            title="Re-run optical character extraction"
           >
-            <Scan size={14} />
-            <span>{isScanning ? 'Scanning...' : 'Re-Run Vision OCR'}</span>
+            <span>{isScanning ? 'Extracting…' : 'Re-Scan'}</span>
           </button>
         </div>
       </div>
 
-      {/* Grid of Two Columns: Document Slip & Camera Crop */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px' }}>
-        
-        {/* Left Column: Official E-Challan Notice Replica */}
+      {/* Main Evidence Viewer */}
+      {activeTab === 'notice' ? (
+        /* Government Notice Slip Replica */
         <div style={{
-          background: '#090d16',
+          background: 'var(--bg-panel)',
+          border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-md)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          padding: '16px',
-          position: 'relative',
-          fontFamily: 'var(--font-mono)'
+          padding: '16px'
         }}>
-          {/* Header watermark */}
+          {/* Document Header */}
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px dashed rgba(255, 255, 255, 0.15)',
-            paddingBottom: '10px',
-            marginBottom: '12px'
+            alignItems: 'flex-start',
+            borderBottom: '1px solid var(--border-subtle)',
+            paddingBottom: '12px',
+            marginBottom: '14px'
           }}>
             <div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-primary)' }}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: '#f1f5f9' }}>
                 {challan.authority}
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                GOVERNMENT OF INDIA • E-CHALLAN REPOSITORY
+              <div style={{ fontSize: '11px', color: 'var(--text-tertiary)' }}>
+                Government of India • Ministry of Road Transport & Highways
               </div>
             </div>
-            <div className="badge badge-danger" style={{ fontSize: '0.65rem' }}>
-              NOTICE REF: {challan.challanNumber}
-            </div>
+            <span className="status-chip chip-amber" style={{ fontSize: '11px' }}>
+              Ref: {challan.challanNumber}
+            </span>
           </div>
 
-          {/* Key Attributes with Visual Bounding Box Highlighting */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Vehicle Reg No:</span>
-              <span style={{ fontWeight: 700, color: '#fff', background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
+          {/* Key Value Inspection Matrix */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '12px' }}>
+            <div style={{ padding: '8px 10px', background: 'var(--bg-card)', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '2px' }}>
+                Registered Plate / Class
+              </div>
+              <div style={{ fontWeight: 700, color: '#fff', fontFamily: 'var(--font-mono)' }}>
                 {challan.registeredVehicle.plate}
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Vehicle Make/Class:</span>
-              <span style={{ color: '#fff' }}>{challan.registeredVehicle.model}</span>
-            </div>
-
-            {/* Bounding Box 1: Offence Date vs Notice Date */}
-            <div style={{
-              background: challan.daysElapsed > 15 ? 'rgba(239, 68, 68, 0.12)' : 'rgba(255,255,255,0.03)',
-              border: challan.daysElapsed > 15 ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid var(--border-subtle)',
-              borderRadius: '6px',
-              padding: '8px',
-              position: 'relative'
-            }}>
-              {challan.daysElapsed > 15 && (
-                <div style={{
-                  position: 'absolute',
-                  top: '-9px',
-                  right: '8px',
-                  background: '#ef4444',
-                  color: '#fff',
-                  fontSize: '0.62rem',
-                  fontWeight: 700,
-                  padding: '1px 6px',
-                  borderRadius: '3px'
-                }}>
-                  RULE 167A DEFECT: {challan.daysElapsed} DAYS ELAPSED
-                </div>
-              )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Offence Date:</span>
-                <span style={{ color: '#f8fafc', fontWeight: 600 }}>{challan.offenceDate}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Notice Dispatch Date:</span>
-                <span style={{ color: challan.daysElapsed > 15 ? '#f87171' : '#f8fafc', fontWeight: 700 }}>
-                  {challan.noticeDate}
-                </span>
+              <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                {challan.registeredVehicle.model}
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Alleged Violation:</span>
-              <span style={{ color: '#f59e0b', fontWeight: 600, textAlign: 'right', maxWidth: '65%' }}>
-                {challan.offenceSection}
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Location:</span>
-              <span style={{ color: '#cbd5e1', textAlign: 'right', maxWidth: '65%' }}>
-                {challan.location}
-              </span>
-            </div>
-
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              borderTop: '1px dashed rgba(255,255,255,0.15)',
-              paddingTop: '8px',
-              marginTop: '4px'
-            }}>
-              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>DEMANDED PENALTY:</span>
-              <span style={{ fontSize: '1.05rem', fontWeight: 800, color: '#f87171' }}>
+            <div style={{ padding: '8px 10px', background: 'var(--bg-card)', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '2px' }}>
+                Demanded Penalty
+              </div>
+              <div style={{ fontSize: '16px', fontWeight: 800, color: '#f43f5e' }}>
                 ₹{challan.fineAmount}
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>
+                Status: Pending Contest
+              </div>
+            </div>
+          </div>
+
+          {/* Statutory Timing Audit Banner */}
+          <div style={{
+            marginTop: '12px',
+            padding: '10px 12px',
+            background: challan.daysElapsed > 15 ? 'var(--color-rose-bg)' : 'var(--bg-card)',
+            border: challan.daysElapsed > 15 ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid var(--border-subtle)',
+            borderRadius: '6px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                Statutory Notice Service Timeline:
               </span>
+              {challan.daysElapsed > 15 && (
+                <span className="status-chip chip-rose" style={{ fontSize: '10px' }}>
+                  Rule 167A Violation (49 Days)
+                </span>
+              )}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+              <span>Offence: <strong style={{ color: '#fff' }}>{challan.offenceDate.split(', ')[0]}</strong></span>
+              <span>Dispatched: <strong style={{ color: challan.daysElapsed > 15 ? '#fb7185' : '#fff' }}>{challan.noticeDate.split(', ')[0]}</strong></span>
+              <span>Delay: <strong style={{ color: challan.daysElapsed > 15 ? '#fb7185' : '#fff' }}>{challan.daysElapsed} Days (Max 15)</strong></span>
+            </div>
+          </div>
+
+          {/* Location & Offence */}
+          <div style={{ marginTop: '12px', fontSize: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-tertiary)' }}>Offence Section:</span>
+              <span style={{ color: '#f59e0b', fontWeight: 600, textAlign: 'right' }}>{challan.offenceSection}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-tertiary)' }}>Location:</span>
+              <span style={{ color: '#cbd5e1', textAlign: 'right' }}>{challan.location}</span>
             </div>
           </div>
         </div>
-
-        {/* Right Column: ITMS Camera Evidence Snapshot & ANPR Analysis */}
+      ) : (
+        /* Camera Feed Evidence Crop */
         <div style={{
-          background: '#090d16',
+          background: 'var(--bg-panel)',
+          border: '1px solid var(--border-subtle)',
           borderRadius: 'var(--radius-md)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          padding: '16px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
+          padding: '16px'
         }}>
-          <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', fontSize: '12px' }}>
+            <span style={{ color: 'var(--text-secondary)' }}>Sensor: <strong>{challan.cameraEvidence.cameraType}</strong></span>
+            <span className="status-chip chip-sky">ANPR Crop #410</span>
+          </div>
+
+          {/* Camera Frame Preview */}
+          <div style={{
+            height: '130px',
+            background: '#04060a',
+            border: '1px solid var(--border-strong)',
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative'
+          }}>
             <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '10px'
+              position: 'absolute',
+              top: '6px',
+              left: '8px',
+              fontSize: '10px',
+              fontFamily: 'var(--font-mono)',
+              color: '#10b981'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 700, color: '#06b6d4' }}>
-                <Camera size={16} />
-                <span>ITMS Photographic Evidence</span>
-              </div>
-              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-                Camera: {challan.cameraEvidence.cameraType}
-              </span>
+              ● ITMS LIVE CAPTURE • 1920x1080 60FPS
             </div>
 
-            {/* Simulated Camera Feed Container */}
             <div style={{
-              height: '140px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #131a2a 0%, #0c121e 100%)',
-              border: '1px solid rgba(6, 182, 212, 0.2)',
-              position: 'relative',
-              overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: 'inset 0 0 20px rgba(0,0,0,0.8)'
+              border: '2px solid #0ea5e9',
+              padding: '6px 14px',
+              borderRadius: '6px',
+              background: 'rgba(14, 165, 233, 0.1)',
+              textAlign: 'center'
             }}>
-              {/* CCTV gridlines and HUD overlay */}
-              <div style={{
-                position: 'absolute',
-                top: '6px',
-                left: '8px',
-                fontSize: '0.65rem',
-                fontFamily: 'var(--font-mono)',
-                color: '#34d399',
-                display: 'flex',
-                gap: '12px'
-              }}>
-                <span>CAM_REC: ● LIVE</span>
-                <span>IR_SENSOR: ACTIVE</span>
+              <div style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 600, textTransform: 'uppercase' }}>
+                Detected Plate Characters
               </div>
-
-              <div style={{
-                position: 'absolute',
-                bottom: '6px',
-                left: '8px',
-                fontSize: '0.65rem',
-                fontFamily: 'var(--font-mono)',
-                color: '#94a3b8'
-              }}>
-                GPS: 28.5823° N, 77.2619° E
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '18px', fontWeight: 800, color: '#fff', letterSpacing: '0.1em' }}>
+                {challan.cameraEvidence.anprPlateDetected}
               </div>
-
-              {/* Bounding Box on Evidence */}
-              <div style={{
-                border: '2px solid #06b6d4',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                background: 'rgba(6, 182, 212, 0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '4px',
-                boxShadow: '0 0 15px rgba(6, 182, 212, 0.3)'
-              }}>
-                <div style={{ fontSize: '0.62rem', color: '#06b6d4', fontWeight: 700, letterSpacing: '0.05em' }}>
-                  SARVAM VISION ANPR CROP
-                </div>
-                <div style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '1rem',
-                  fontWeight: 800,
-                  letterSpacing: '0.1em',
-                  color: '#fff',
-                  background: '#000',
-                  padding: '3px 10px',
-                  borderRadius: '4px',
-                  border: '1px solid #334155'
-                }}>
-                  {challan.cameraEvidence.anprPlateDetected}
-                </div>
-                <div style={{ fontSize: '0.68rem', color: '#94a3b8' }}>
-                  Confidence: <span style={{ color: '#34d399', fontWeight: 600 }}>{challan.cameraEvidence.plateConfidence}</span>
-                </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>
+                OCR Confidence: <strong style={{ color: '#34d399' }}>{challan.cameraEvidence.plateConfidence}</strong>
               </div>
             </div>
           </div>
 
-          {/* Evidence Analysis Findings */}
+          {/* Optical Defects Detected */}
           <div style={{ marginTop: '12px' }}>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-              Sarvam Vision OCR Findings:
+            <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-tertiary)', textTransform: 'uppercase', marginBottom: '6px' }}>
+              Forensic Visual Findings:
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {challan.cameraEvidence.visualDefects.map((defect, i) => (
-                <div key={i} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  fontSize: '0.74rem',
-                  color: '#fbbf24',
-                  background: 'rgba(245, 158, 11, 0.08)',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  border: '1px solid rgba(245, 158, 11, 0.2)'
-                }}>
-                  <AlertTriangle size={13} style={{ flexShrink: 0 }} />
-                  <span>{defect}</span>
-                </div>
-              ))}
-            </div>
+            {challan.cameraEvidence.visualDefects.map((defect, i) => (
+              <div key={i} style={{
+                fontSize: '12px',
+                color: '#fbbf24',
+                background: 'var(--color-primary-bg)',
+                border: '1px solid rgba(245, 158, 11, 0.2)',
+                padding: '6px 10px',
+                borderRadius: '4px',
+                marginBottom: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}>
+                <AlertTriangle size={13} style={{ flexShrink: 0 }} />
+                <span>{defect}</span>
+              </div>
+            ))}
           </div>
         </div>
-
-      </div>
+      )}
     </div>
   );
 }
